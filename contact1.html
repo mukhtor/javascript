@@ -1,0 +1,120 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>mahsulotlar</title>
+</head>
+<body>
+<input type="text" id="input-name" placeholder="Mahsulot nomi">
+<input type="text" id="input-money" placeholder="Mahsulot narxi">
+<input type="text" id="input-company" placeholder="ishlab chiqaruvchi kampaniya">
+<button onclick="addProduct()">add</button>
+<hr>
+<br>
+<table width="100%" border="1px" cellpadding="0" cellspacing="0">
+    <thead>
+    <th>Nomi</th>
+    <th>Narxi</th>
+    <th>Kampaniyasi</th>
+    <th width="100px">Helpers</th>
+    </thead>
+
+    <tbody id="table-body"></tbody>
+
+</table>
+<div id="message-box"></div>
+
+<script>
+    var mahsulot_nomi= document.getElementById('input-name');
+    var narxi = document.getElementById('input-money');
+    var kampaniya = document.getElementById('input-company');
+    var table_body = window.document.getElementById('table-body');
+    var products = [];
+    var counter = 0;
+    var products =getProducts();
+
+    function init() {
+        if(products.length > 0){
+
+            for(var index = 0; index < products.length; index++){
+                var rows = '<tr>' +
+                    '<td>'+products[index].mahsulot_nomi+'</td>' +
+                    '<td>'+products[index].narxi+'</td>' +
+                    '<td>'+products[index].kampaniya+'</td>' +
+                    '<td><button onclick="deleteProducts('+index+')">Delete</button></td>' +
+                    '</tr>';
+                table_body.innerHTML += rows;
+            }
+        }
+    }
+
+    function addProduct() {
+        products.push({
+            id:++counter,
+            mahsulot_nomi:mahsulot_nomi.value,
+            narxi:narxi.value,
+            kampaniya:kampaniya.value
+        });
+        setProducts();
+
+        var rows = '<tr>' +
+                '<td>'+mahsulot_nomi.value+'</td>' +
+                '<td>'+narxi.value+'</td>' +
+                '<td>'+kampaniya.value+'</td>' +
+                '<td><button onclick="deleteProducts('+counter+')">Delete</button></td>' +
+                '</tr>';
+            //html ga qoyish
+            table_body.innerHTML +=rows;
+            //input zonani tozalab ketish
+            mahsulot_nomi.value='';
+            narxi.value='';
+            kampaniya.value='';
+    }
+
+    function getProducts()
+    {
+        var products = JSON.parse(localStorage.getItem('products'));
+        if (products == null)
+            return [];
+        var result = [];
+        for (var index = 0; index < products.length; index++)
+        {
+            if(products[index] != null) {
+                result.push(products[index]);
+                counter = products[index].id;
+            }
+        }
+        return result;
+    }
+
+    function setProducts(){
+        localStorage.setItem('products', JSON.stringify(products));
+    }
+
+    function deleteProducts() {
+        if(!confirm('O`chirishni tasdiqlang!!!'))
+            return false;
+            table_body.innerHTML =  '';
+
+            for(var index = 0; index < products.length; index++){
+                if(products[index].id != id){
+                    var rows = '<tr>' +
+                        '<td>'+products[index].mahsulot.nomi+'</td>' +
+                        '<td>'+products[index].narxi+'</td>' +
+                        '<td>'+products[index].kampaniya+'</td>' +
+                        '<td><button onclick="deleteProducts('+index+')">Delete</button></td>' +
+                        '</tr>';
+
+                    table_body.innerHTML += rows;
+                }
+                else{
+                    delete products[index];
+                }
+            }
+            setProducts();
+    }
+
+
+init();
+</script>
+</body>
+</html>
